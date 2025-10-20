@@ -1,0 +1,22 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+int main() {
+	double h, t, ay;
+	cout << "Введите высоту\n";
+	cin >> h;
+	if(h<=0){
+		cout << "Высота введена неккоректно\n" << endl;
+		return 0;
+	}
+	cout << "Введите вертикальное ускорение\n";
+	cin >> ay;
+	if(ay<=0){
+			cout << "Вертикальное ускорение введено неккоректно\n" << endl;
+			return 0;
+		}
+	t=sqrt(2*h/ay);
+	cout << "Время равно " << t << endl;
+	return 0;
+}

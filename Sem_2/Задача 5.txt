@@ -1,0 +1,69 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+struct plane{
+	int ID;
+	float m;
+	float S;
+	float T;
+	float Cd;
+	float Cl;
+	float V;
+};
+float g=9.8;
+float ro=1.3;
+double D(plane p){
+	return 0.5*ro*(p.V)*(p.V)*(p.S)*(p.Cd);
+}
+double L(plane p){
+	return 0.5*ro*(p.V)*(p.V)*(p.S)*(p.Cl);
+}
+double a_t(plane p){
+	return (p.T-D(p))/p.m;
+}
+double a_y(plane p){
+	return (L(p)-p.m*g)/p.m;
+}
+double t_h(plane p, float h){
+	return sqrt(2*h/a_y(p));
+}
+plane vvod_sm(){
+	plane p;
+	cout <<"-----------------------------------------------\n";
+	cout << "Введите номер самолёта\n";
+	cin >> p.ID;
+	cout << "Введите площадь крыла\n";
+	cin >> p.S;
+	cout << "Введите тягу\n";
+	cin >> p.T;
+	cout << "Введите массу\n";
+	cin >> p.m;
+	cout << "Введите скорость\n";
+	cin >>p.V;
+	cout << "Введите коэффициент сопротивления\n";
+	cin >>p.Cd;
+	cout << "Введите коэффициент подёмной силы\n";
+	cin >>p.Cl;
+	cout <<"-----------------------------------------------\n";
+	return p;
+}
+int main() {
+	plane planes[3];
+	for (int i=0; i<3; i++){
+		planes[i]=vvod_sm();
+	}
+	float min_time=10^100;
+	int perviy=0;
+	float h;
+	cout << "Введите высоту\n";
+	cin >> h;
+	for (int i=0; i<3; i++){
+		if (t_h(planes[i], h)<=min_time)
+			{
+			min_time=t_h(planes[i], h);
+			perviy=planes[i].ID;
+			}
+		}
+	cout << "\n Быстрее всего поднимется самолёт под номером  " << perviy << endl;
+	return 0;
+}

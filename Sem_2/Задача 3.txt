@@ -1,0 +1,19 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+	double m, L, D, T, a, ay;
+	double g=9.81;
+	cout << "Введите массу\n";
+	cin >> m;
+	cout << "Введите подъёмную силу\n";
+	cin >> L;
+	cout << "Введите сопротивление\n";
+	cin >> D;
+	cout << "Введите тягу\n";
+	cin >> T;
+	a=(T-D)/m;
+	ay=(L-m*g)/m;
+	cout << "\nУскорение по направлению движения равно " << a <<", а вертикальное ускорение равно " << ay << endl;
+	return 0;
+}

@@ -1,0 +1,19 @@
+#include <iostream>
+using namespace std;
+double sopr(double ro, double V, double S, double C){
+	return 0.5*ro*V*V*S*C;
+}
+int main() {
+	double ro, V, S, C, L;
+	cout << "Введите площадь крыла\n";
+	cin >> S;
+	cout << "Введите скорость полёта\n";
+	cin >> V;
+	cout << "Введите плотность воздуха\n";
+	cin >> ro;
+	cout << "Коэффициент сопротивления силы\n";
+	cin >> C;
+	L=sopr(ro, V, S, C);
+	cout << "\nСопротивление среды равно " << L << endl;
+	return 0;
+}
