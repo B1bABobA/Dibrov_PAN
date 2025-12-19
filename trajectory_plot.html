@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='UTF-8'>
+<title>TU-154 Trajectory Optimization</title>
+<script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+.container { max-width: 1400px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+h1 { color: #2c3e50; text-align: center; }
+.stats { display: flex; justify-content: space-around; margin: 20px 0; }
+.stat-box { background: #ecf0f1; padding: 15px; border-radius: 5px; text-align: center; flex: 1; margin: 0 10px; }
+.stat-box h3 { margin: 0; color: #34495e; font-size: 14px; }
+.stat-box p { margin: 10px 0 0 0; font-size: 24px; font-weight: bold; color: #2980b9; }
+.chart-container { position: relative; height: 600px; margin: 20px 0; }
+</style>
+</head>
+<body>
+<div class='container'>
+<h1>&#x1F6E9;&#xFE0F; Optimizacija traektorii TU-154 (Variant #1)</h1>
+<div class='stats'>
+<div class='stat-box' style='background: #e3f2fd;'>
+<h3>&#x26A1; Minimizacija vremeni</h3>
+<p>11.4 min</p>
+<p style='font-size: 16px; color: #666;'>4602.1 kg topliva</p>
+</div>
+<div class='stat-box' style='background: #e8f5e9;'>
+<h3>&#x1F4B0; Minimizacija topliva</h3>
+<p>16.3 min</p>
+<p style='font-size: 16px; color: #666;'>4489.3 kg topliva</p>
+</div>
+<div class='stat-box' style='background: #fff3e0;'>
+<h3>&#x1F4CA; Ekonomija topliva</h3>
+<p>2.5%</p>
+<p style='font-size: 16px; color: #666;'>+4.9 min</p>
+</div>
+</div>
+<div class='chart-container'>
+<canvas id='trajectoryChart'></canvas>
+</div>
+<script>
+const ctx = document.getElementById('trajectoryChart').getContext('2d');
+const dataMinTime = [
+{x: 300.0, y: 300.0},
+{x: 588.0, y: 300.0},
+{x: 588.0, y: 1300.0},
+{x: 588.0, y: 2300.0},
+{x: 588.0, y: 3300.0},
+{x: 588.0, y: 4300.0},
+{x: 588.0, y: 5300.0},
+{x: 876.0, y: 5300.0}
+];
+const dataMinFuel = [
+{x: 300.0, y: 300.0},
+{x: 588.0, y: 1300.0},
+{x: 588.0, y: 2300.0},
+{x: 588.0, y: 3300.0},
+{x: 588.0, y: 4300.0},
+{x: 876.0, y: 5300.0}
+];
+const chart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    datasets: [
+      {
+        label: 'Minimizacija vremeni (11.4 min, 4602.1 kg)',
+        data: dataMinTime,
+        borderColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+        borderWidth: 3,
+        pointRadius: 5,
+        pointBackgroundColor: 'rgb(255, 99, 132)',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        tension: 0.1
+      },
+      {
+        label: 'Minimizacija topliva (16.3 min, 4489.3 kg)',
+        data: dataMinFuel,
+        borderColor: 'rgb(75, 192, 192)',
+        backgroundColor: 'rgba(75, 192, 192, 0.1)',
+        borderWidth: 3,
+        pointRadius: 5,
+        pointBackgroundColor: 'rgb(75, 192, 192)',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        tension: 0.1
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      title: {
+        display: true,
+        text: 'Traektorija nabora vysoty H(V)',
+        font: { size: 18 }
+      },
+      legend: {
+        display: true,
+        position: 'top',
+        labels: { font: { size: 14 } }
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            return context.dataset.label + ': H=' + context.parsed.y.toFixed(0) + ' m, V=' + context.parsed.x.toFixed(0) + ' km/h';
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        type: 'linear',
+        title: { display: true, text: 'Skorost V (km/h)', font: { size: 16 } },
+        min: 300,
+        max: 900,
+        grid: { color: 'rgba(0, 0, 0, 0.1)' }
+      },
+      y: {
+        type: 'linear',
+        title: { display: true, text: 'Vysota H (m)', font: { size: 16 } },
+        min: 0,
+        max: 8000,
+        grid: { color: 'rgba(0, 0, 0, 0.1)' }
+      }
+    }
+  }
+});
+</script>
+</div>
+</body>
+</html>
