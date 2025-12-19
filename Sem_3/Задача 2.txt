@@ -1,0 +1,63 @@
+#include <iostream>
+#include <iomanip>
+using std::cin;
+using std::cout;
+using std::endl;
+using std::setw;
+
+double resist(double& s, double& v, double& p, double& Cd, double& L)
+{
+	L = 0.5 * v * v * p * s * Cd;
+	return L;
+}
+
+int main()
+{
+	double  s, v, p, Cd, L;
+	cout << "Enter squier (m): ";
+	cin >> s;
+	while (s < 0 or cin.fail())
+	{
+		cin.clear();
+		cin.ignore(1000, '\n');
+		cout << "Error! Enter a valid non-negative number: ";
+		cin >> s;
+	}
+	cout << "Enter velocity (m/s): ";
+	cin >> v;
+	while (v < 0 or cin.fail())
+	{
+		cin.clear();
+		cin.ignore(1000, '\n');
+		cout << "Error! Enter a valid non-negative number: ";
+		cin >> v;
+	}
+
+	cout << "Enter density (kg/m^3):";
+	cin >> p;
+	while (p < 0 or cin.fail())
+	{
+		cin.clear();
+		cin.ignore(1000, '\n');
+		cout << "Error! Enter a valid non-negative number: ";
+		cin >> p;
+	}
+
+	cout << "Enter resistance coefficient: ";
+	cin >> Cd;
+
+	while (Cd < 0 or cin.fail())
+	{
+		cin.clear();
+		cin.ignore(1000, '\n');
+		cout << "Error! Enter a valid non-negative number: ";
+		cin >> Cd;
+	}
+	resist(s, v, p, Cd, L);
+	cout << "Result L = ";
+	
+	cout << L << "N" << endl;
+	return 0;
+}
+
+
