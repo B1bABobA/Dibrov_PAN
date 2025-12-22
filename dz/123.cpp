@@ -484,7 +484,6 @@ TrajectoryResult solve_trajectory(OptimizationCriterion criterion) {
         cout << "\n";
     }
 
-    // Вывод матрицы топлива
     cout << "\nMatrica raskhoda topliva (kg):\n";
     cout << "     V->";
     for (int j = 0; j < NV_points; j++) {
@@ -505,8 +504,9 @@ TrajectoryResult solve_trajectory(OptimizationCriterion criterion) {
     }
     cout << "\n";
 
-    int end_i = NH_points - 1; 
-    int end_j = NV_points - 1; 
+
+    int end_i = NH_points - 1;
+    int end_j = NV_points - 1;
 
     if (cost_table[end_i][end_j] >= 1e9) {
         cout << "OSHIBKA: Ne naiden put!\n";
@@ -565,12 +565,12 @@ TrajectoryResult solve_trajectory(OptimizationCriterion criterion) {
     cout << "- Razgon+Podiem: " << used_razgon_podiem << " raz\n";
     cout << "---------------------------------------------\n";
     cout << fixed << setprecision(2);
-    cout << "Vremya manevra:     " << time_table[end_i][end_j] << " s  ("  // ИСПРАВЛЕНО
+    cout << "Vremya manevra:     " << time_table[end_i][end_j] << " s  ("
         << time_table[end_i][end_j] / 60.0 << " min)\n";
-    cout << "Raskhod topliva:    " << fuel_table[end_i][end_j] << " kg\n";  // ИСПРАВЛЕНО
+    cout << "Raskhod topliva:    " << fuel_table[end_i][end_j] << " kg\n";
 
     double delta_H = H_FINISH - H_START;
-    double avg_climb_rate = delta_H / time_table[end_i][end_j];  // ИСПРАВЛЕНО
+    double avg_climb_rate = delta_H / time_table[end_i][end_j];
 
     cout << "Srednyaya Vy:       " << avg_climb_rate << " m/s  ("
         << avg_climb_rate * 60.0 << " m/min)\n";
@@ -578,8 +578,8 @@ TrajectoryResult solve_trajectory(OptimizationCriterion criterion) {
 
     trajectory.path = path;
     trajectory.maneuvers = path_maneuvers;
-    trajectory.total_time = time_table[end_i][end_j];  // ИСПРАВЛЕНО
-    trajectory.total_fuel = fuel_table[end_i][end_j];  // ИСПРАВЛЕНО
+    trajectory.total_time = time_table[end_i][end_j];
+    trajectory.total_fuel = fuel_table[end_i][end_j];
     trajectory.avg_vy = avg_climb_rate;
     trajectory.used_razgon = used_razgon;
     trajectory.used_podiem = used_podiem;
@@ -762,3 +762,4 @@ int main() {
 
     return 0;
 }
+
