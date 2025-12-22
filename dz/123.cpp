@@ -505,9 +505,8 @@ TrajectoryResult solve_trajectory(OptimizationCriterion criterion) {
     }
     cout << "\n";
 
-    // ИСПРАВЛЕНО: правильные индексы конечной точки
-    int end_i = NH_points - 1;  // Последний индекс по высоте
-    int end_j = NV_points - 1;  // Последний индекс по скорости
+    int end_i = NH_points - 1; 
+    int end_j = NV_points - 1; 
 
     if (cost_table[end_i][end_j] >= 1e9) {
         cout << "OSHIBKA: Ne naiden put!\n";
