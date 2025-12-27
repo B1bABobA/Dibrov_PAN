@@ -1,0 +1,33 @@
+﻿#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+bool isInvalid(double t) {
+    return t < -100.0 || t > 200.0;
+}
+
+int main() {
+    vector<double> temperatures;
+
+    temperatures.push_back(25.0);
+    temperatures.push_back(30.5);
+    temperatures.push_back(-150.0);
+    temperatures.push_back(90.0);
+    temperatures.push_back(250.0);
+    temperatures.push_back(110.0);
+    temperatures.push_back(-80.0);
+
+    vector<double>::iterator new_end =
+        remove_if(temperatures.begin(), temperatures.end(), isInvalid);
+
+    temperatures.erase(new_end, temperatures.end());
+
+    for (size_t i = 0; i < temperatures.size(); i++) {
+        cout << temperatures[i] << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
