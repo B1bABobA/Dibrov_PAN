@@ -1,0 +1,59 @@
+﻿#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+class FlightComputer {
+private:
+    double altitude;
+    double velocity;
+    double fuel;
+    double thrust;
+
+public:
+
+    FlightComputer(double alt, double vel, double f, double t) {
+        altitude = alt;
+        velocity = vel;
+        fuel = f;
+        thrust = t;
+    }
+
+    void simulateStep(double dt) {
+
+        if (fuel <= 0) {
+            thrust = 0;
+        }
+
+        velocity += (thrust / 1000.0 - 9.8) * dt;
+        altitude += velocity * dt;
+
+        fuel -= dt * 2.0;
+
+        if (fuel < 0) {
+            fuel = 0;
+        }
+    }
+
+    void printStatus() {
+        cout << fixed << setprecision(1);
+        cout << "высота=" << altitude << "м, "
+            << "скорость=" << velocity << "м/с, "
+            << "топливо=" << fuel << endl;
+    }
+};
+
+int main() {
+
+    FlightComputer fc(0, 0, 100, 12000);
+
+    double time = 0;
+    for (int i = 0; i < 5; i++) {
+        fc.simulateStep(0.5);
+        time += 0.5;
+        cout << "t=" << time << "c: ";
+        fc.printStatus();
+    }
+
+    return 0;
+}

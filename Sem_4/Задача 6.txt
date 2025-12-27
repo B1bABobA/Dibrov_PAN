@@ -1,0 +1,53 @@
+﻿#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+class RocketStage {
+private:
+    double thrust;
+    double burnTime;
+    double mass;
+
+public:
+    RocketStage(double t, double bt, double m) {
+        thrust = t;
+        burnTime = bt;
+        mass = m;
+    }
+
+    double getDeltaV() {
+        if (mass == 0.0) {
+            return 0.0;
+        }
+        return (thrust * burnTime) / mass;
+    }
+
+
+    void printInfo() {
+        cout << "Тяга: " << thrust << " H | Время работы: " << burnTime
+            << " c | Масса: " << mass << " кг | ΔV: "
+            << fixed << setprecision(2) << getDeltaV() << " м/с" << endl;
+    }
+};
+
+int main() {
+
+    RocketStage s1(5000, 10, 1000);
+    RocketStage s2(7000, 8, 900);
+    RocketStage s3(9000, 6, 800);
+
+    cout << "Параметры ступеней ракеты:" << endl;
+    cout << "----------------------------------------" << endl;
+    s1.printInfo();
+    s2.printInfo();
+    s3.printInfo();
+
+    double totalV = s1.getDeltaV() + s2.getDeltaV() + s3.getDeltaV();
+
+    cout << "----------------------------------------" << endl;
+    cout << "Итоговая скорость ракеты: " << fixed << setprecision(2)
+        << totalV << " м/с" << endl;
+
+    return 0;
+}

@@ -1,0 +1,27 @@
+#include <fstream>
+#include <string>
+#include <iomanip>
+using namespace std;
+class FlightLogger {
+ std::ofstream fout;
+public:
+ FlightLogger(const std::string& filename) {
+    fout.open(filename, std::ios::out);
+    if (!fout.is_open()) throw std::runtime_error("Ошибка открытия файла");
+    fout << "Time |  x  |  y  |  z  |  Speed\n";
+ }
+ 
+ void log(double t, double x,double y, double z, double V) {
+    fout <<setw(5)<< t <<"|" << x << setw(2)<<" | " << y << "|" << z << "  |  " << V << "\n";
+ }
+ ~FlightLogger() {
+ fout.close();
+ }
+};
+
+int main() {
+ FlightLogger log("trajectory.csv");
+ log.log(0.0,10.5,20.3,100.0,25.0);
+ log.log(1.5,15.2,25.1,105.0,27.5);
+ log.log(3.0,20.8,30.7,110.0,30.0);
+}

@@ -1,0 +1,201 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <sstream>
+
+class Target {
+public:
+    int id;
+    std::string name;
+    double x, y, z;
+    double priority;
+    double distance;
+    
+    Target(int id = 0, const std::string& name = "", double x = 0, double y = 0, double z = 0,
+           double priority = 0, double distance = 0)
+        : id(id), name(name), x(x), y(y), z(z), priority(priority), distance(distance) {}
+    
+    void display() const {
+        std::cout << "ID: " << id << ", " << name 
+                  << ", Position: (" << x << ", " << y << ", " << z 
+                  << "), Priority: " << priority 
+                  << ", Distance: " << distance << std::endl;
+    }
+};
+
+class TargetManager {
+private:
+    std::vector<Target> targets;
+    const std::string filename = "targets.txt";
+
+public:
+    // Добавление новой цели
+    void addTarget(int id, const std::string& name, double x, double y, double z,
+                   double priority, double distance) {
+        // Проверяем, существует ли уже цель с таким ID
+        for (const auto& target : targets) {
+            if (target.id == id) {
+                std::cout << "Цель с ID " << id << " уже существует!" << std::endl;
+                return;
+            }
+        }
+        
+        targets.emplace_back(id, name, x, y, z, priority, distance);
+        std::cout << "Цель успешно добавлена!" << std::endl;
+    }
+
+    // Удаление цели по ID
+    bool removeTarget(int target_id) {
+        auto it = std::remove_if(targets.begin(), targets.end(),
+            [target_id](const Target& t) { return t.id == target_id; });
+        
+        if (it != targets.end()) {
+            targets.erase(it, targets.end());
+            std::cout << "Цель с ID " << target_id << " успешно удалена!" << std::endl;
+            return true;
+        }
+        
+        std::cout << "Цель с ID " << target_id << " не найдена!" << std::endl;
+        return false;
+    }
+
+    // Сохранение целей в файл
+    void saveTargetsToFile() {
+        std::ofstream file("Itob.txt");
+        if (!file.is_open()) {
+            std::cerr << "Ошибка открытия файла для записи!" << std::endl;
+            return;
+        }
+        
+        for (const auto& target : targets) {
+            file << target.id << ","
+                 << target.name << ","
+                 << target.x << ","
+                 << target.y << ","
+                 << target.z << ","
+                 << target.priority << ","
+                 << target.distance << std::endl;
+        }
+        
+        file.close();
+        std::cout << "Цели успешно сохранены в файл!" << std::endl;
+    }
+
+    // Загрузка целей из файла
+    void loadTargetsFromFile() {
+        std::ifstream file(filename);
+        if (!file.is_open()) {
+            std::cerr << "Ошибка открытия файла для чтения!" << std::endl;
+            return;
+        }
+        
+        targets.clear(); // Очищаем текущие цели
+        std::string line;
+        
+        while (std::getline(file, line)) {
+            std::stringstream ss(line);
+            std::string token;
+            std::vector<std::string> tokens;
+            
+            while (std::getline(ss, token, ',')) {
+                tokens.push_back(token);
+            }
+            
+            if (tokens.size() == 7) {
+                int id = std::stoi(tokens[0]);
+                std::string name = tokens[1];
+                double x = std::stod(tokens[2]);
+                double y = std::stod(tokens[3]);
+                double z = std::stod(tokens[4]);
+                double priority = std::stod(tokens[5]);
+                double distance = std::stod(tokens[6]);
+                
+                targets.emplace_back(id, name, x, y, z, priority, distance);
+            }
+        }
+        
+        file.close();
+        std::cout << "Цели успешно загружены из файла!" << std::endl;
+    }
+
+    // Получение целей с высоким приоритетом
+    std::vector<Target> getHighPriorityTargets(double min_priority) {
+        std::vector<Target> highPriorityTargets;
+        
+        for (const auto& target : targets) {
+            if (target.priority >= min_priority) {
+                highPriorityTargets.push_back(target);
+            }
+        }
+        
+        std::cout << "Найдено " << highPriorityTargets.size() 
+                  << " целей с приоритетом >= " << min_priority << std::endl;
+        
+        return highPriorityTargets;
+    }
+
+    // Сортировка целей по расстоянию (по возрастанию)
+    void sortByDistance() {
+        std::sort(targets.begin(), targets.end(),
+            [](const Target& a, const Target& b) {
+                return a.distance < b.distance;
+            });
+        
+        std::cout << "Цели отсортированы по расстоянию!" << std::endl;
+    }
+
+    // Вывод всех целей
+    void displayAllTargets() const {
+        std::cout << "\nЦели в системе:" << std::endl;
+        std::cout << "----------------------------------------" << std::endl;
+        for (const auto& target : targets) {
+            target.display();
+        }
+        std::cout << "----------------------------------------" << std::endl;
+        std::cout << "Всего целей: " << targets.size() << std::endl;
+    }
+
+    // Получение количества целей
+    size_t getTargetCount() const {
+        return targets.size();
+    }
+};
+
+// Пример использования
+int main() {
+    TargetManager manager;
+    
+    // Загрузка целей из файла
+    manager.loadTargetsFromFile();
+    
+    // Вывод всех целей
+    manager.displayAllTargets();
+    
+    // Добавление новой цели (как в примере)
+    manager.addTarget(4, "Name4", 200.0, 100.0, 20.0, 0.7, 1800.0);
+    
+    // Вывод всех целей после добавления
+    manager.displayAllTargets();
+    
+    // Получение целей с высоким приоритетом
+    auto highPriority = manager.getHighPriorityTargets(0.5);
+    std::cout << "\nЦели с высоким приоритетом (>= 0.5):" << std::endl;
+    for (const auto& target : highPriority) {
+        target.display();
+    }
+    
+    // Сортировка по расстоянию
+   // manager.sortByDistance();
+    manager.displayAllTargets();
+    
+    // Сохранение целей в файл
+    manager.saveTargetsToFile();
+    
+    // Пример удаления цели
+    // manager.removeTarget(2);
+    // manager.displayAllTargets();
+    
+    return 0;
+}

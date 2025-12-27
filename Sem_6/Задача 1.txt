@@ -1,0 +1,120 @@
+﻿#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <iomanip>
+#include <cmath>
+#include <sstream>
+using namespace std;
+class TrajetoryLoger {
+private:
+    string filename;
+    struct TrajectoryPoint
+    {
+        double x, y, z;
+        double speed;
+        double time;
+
+        TrajectoryPoint(double x, double y, double z, double speed, double time)
+            : x(x), y(y), z(z), speed(speed), time(time) {
+        }
+    };
+    vector<TrajectoryPoint> points;
+public:
+    TrajetoryLoger(const string& filename) : filename(filename) {}
+    void addPoint(double x, double y, double z, double speed, double time) {
+        points.emplace_back(x, y, z, speed, time);
+    }
+    bool savetoCSV() {
+        ofstream fout(filename);
+        if (!fout.is_open())
+            runtime_error("Ошибка при открытии файла!");
+        fout << fixed << setw(5) << "time\t"
+            << setw(5) << "x\t" << setw(5) << "y\t" << setw(5) << "z\t" << setw(5) << "speed\n";
+        for (int i = 0; i < points.size(); i++) {
+            fout << fixed << setw(5) << setprecision(2) << points[i].time << '\t'
+                << points[i].x << '\t'
+                << points[i].y << '\t'
+                << points[i].z << '\t'
+                << points[i].speed << '\n';
+        }
+        fout.close();
+        if (!fout.good()) {
+            runtime_error("Ошибка закрытия файла!");
+            return false;
+        }
+        else
+            return true;
+    }
+    bool loadFromCSV() {
+        vector <double> values;
+        double value;
+        ifstream fin(filename);
+        if (!fin.is_open()) {
+            runtime_error("Ошибка открытия файла!");
+            return false;
+        }
+        string line;
+        int i = 0;
+        getline(fin, line);
+        while (getline(fin, line)) {
+            stringstream ss(line);
+            while (ss >> value) {
+                values.push_back(value);
+            }
+            points[i].time = values[0];
+            points[i].x = values[1];
+            points[i].y = values[2];
+            points[i].z = values[3];
+            points[i].speed = values[4];
+            i++;
+            cout << values[0] << "\t" << values[1] << "\t" << values[2] << "\t" << values[3] << "\t" << values[4] << '\n';
+            values.clear();
+
+        }
+        fin.close();
+        return true;
+    }
+    double calculateTotalDistance() {
+        double TotalDistance = 0;
+        for (int num_point = 0; num_point < points.size(); num_point++) {
+            if (num_point + 1 >= points.size()) {
+                return TotalDistance;
+            }
+            double base = pow(points[num_point + 1].x - points[num_point].x, 2) + pow(points[num_point + 1].y - points[num_point].y, 2) + pow(points[num_point + 1].z - points[num_point].z, 2);
+            TotalDistance += pow(base, 0.5);
+        }
+        return TotalDistance;
+    }
+    double findMaxSpeed() {
+        double max_speed = points[0].speed;
+        for (int num_point = 0; num_point < points.size(); num_point++) {
+            if (points[num_point].speed > max_speed)
+                max_speed = points[num_point].speed;
+        }
+        return max_speed;
+    }
+    void printStatistics() {
+        cout << "Показатели траектории\n";
+        cout << fixed << setw(5) << "time\t"
+            << setw(5) << "x\t" << setw(5) << "y\t" << setw(5) << "z\t" << setw(5) << "speed\n";
+        for (int i = 0; i < points.size(); i++) {
+            cout << fixed << setw(5) << setprecision(2) << points[i].time << '\t'
+                << points[i].x << '\t'
+                << points[i].y << '\t'
+                << points[i].z << '\t'
+                << points[i].speed << '\n';
+        }
+        cout << "Максимальная скорость: " << findMaxSpeed() << "\n";
+        cout << "Итоговое расстояние: " << calculateTotalDistance() << "\n";
+    }
+};
+int main() {
+    TrajetoryLoger log("data_flight.txt");
+    log.addPoint(1, 6, 8, 41, 0);
+    log.addPoint(2, 2, 1, 53, 1);
+    log.savetoCSV();
+    log.loadFromCSV();
+    log.printStatistics();
+    return 0;
+}

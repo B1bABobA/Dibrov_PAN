@@ -1,0 +1,106 @@
+﻿#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+class Engine {
+private:
+    double thrust;
+    double fuelFlow;
+    double fuel;
+
+public:
+    Engine(double t, double ff, double f) : thrust(t), fuelFlow(ff), fuel(f) {}
+
+    double getThrust() {
+        return thrust;
+    }
+
+    bool hasFuel() {
+        return fuel > 0;
+    }
+
+    void burn(double dt) {
+        if (hasFuel()) {
+            double consumed = fuelFlow * dt;
+            if (consumed > fuel) {
+                consumed = fuel;
+            }
+            fuel -= consumed;
+        }
+    }
+};
+
+class Navigation {
+private:
+    double altitude;
+    double velocity;
+    double acceleration;
+    double mass;
+
+public:
+    Navigation(double alt, double vel, double m) : altitude(alt), velocity(vel), mass(m) {
+        acceleration = 0;
+    }
+
+    void update(double thrust, double dt) {
+        acceleration = thrust / mass - 9.81;
+
+        velocity += acceleration * dt;
+
+        altitude += velocity * dt;
+
+        if (altitude < 0) {
+            altitude = 0;
+            velocity = 0;
+        }
+    }
+
+    void printStatus(double time) {
+        cout.precision(2);
+        cout << fixed;
+        cout << "t=" << time << "c | ";
+        cout << "h=" << altitude << "м | ";
+        cout << "v=" << velocity << "м/c | ";
+        cout << "a=" << acceleration << "м/c^2" << endl;
+    }
+};
+
+class AutonomousFlightSystem {
+private:
+    Engine engine;
+    Navigation nav;
+    double time;
+
+public:
+    AutonomousFlightSystem(const Engine& e, const Navigation& n)
+        : engine(e), nav(n), time(0) {
+    }
+
+    void simulate(double dt, double totalTime) {
+        while (time < totalTime && engine.hasFuel()) {
+            engine.burn(dt);
+            nav.update(engine.getThrust(), dt);
+            nav.printStatus(time);
+            time += dt;
+        }
+    }
+
+    void printSummary() {
+        cout << "--- Полет завершен ---" << endl;
+        cout << "Оставшееся топливо: " << 0 << " кг" << endl;
+    }
+};
+int main() {
+    Engine engine(50000, 10, 100);
+
+    Navigation nav(0, 0, 1000);
+
+    AutonomousFlightSystem system(engine, nav);
+
+    system.simulate(1.0, 15.0);
+
+    system.printSummary();
+
+    return 0;
+}

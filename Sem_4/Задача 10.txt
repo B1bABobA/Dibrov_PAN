@@ -1,0 +1,55 @@
+﻿#include <iostream>
+#include <vector>
+#include <cmath>
+
+using namespace std;
+
+class DroneFlight {
+private:
+    vector<double> x, y;
+    double totalDistance;
+
+    double calculateDistance(double x1, double y1, double x2, double y2) {
+        return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
+    }
+
+public:
+
+    DroneFlight() {
+        totalDistance = 0.0;
+        x.push_back(0.0);
+        y.push_back(0.0);
+    }
+
+    void addPoint(double newX, double newY) {
+        double lastX = x.back();
+        double lastY = y.back();
+
+        double distance = calculateDistance(lastX, lastY, newX, newY);
+        totalDistance += distance;
+
+        x.push_back(newX);
+        y.push_back(newY);
+    }
+
+    double getTotalDistance() {
+        return totalDistance;
+    }
+
+    void printPath() {
+        cout << "Точки маршрута:" << endl;
+        for (size_t i = 1; i < x.size(); i++) {
+            cout << "(" << x[i] << ", " << y[i] << ")" << endl;
+        }
+    }
+};
+int main() {
+    DroneFlight d;
+    d.addPoint(0, 0);
+    d.addPoint(3, 4);
+    d.addPoint(6, 8);
+    d.printPath();
+    cout << "Пройдено: " << d.getTotalDistance() << " м" << endl;
+
+    return 0;
+}
