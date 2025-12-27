@@ -1,0 +1,65 @@
+﻿#include <iostream>
+using namespace std;
+
+struct Aircraft {
+    double m, t, k1, k2, l;
+};
+
+int main()
+{
+    int n = 0;
+    double h = 0;
+    const double g = 9.81;
+    cout << "Введите значение высоты, которую необходимо набрать H:" << endl;
+    cin >> h;
+    if (h < 0) {
+        cout << "Высота меньше 0, введите корректные данные!";
+        return 1;
+    }
+    cout << "Введите количество самолетов N:" << endl;
+    cin >> n;
+
+    Aircraft* planes = new Aircraft[n];
+    double* t = new double[n];
+    double* a = new double[n];
+    cout << "Необходимо ввести данные для каждого самолета" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "Введите значение массы для самолета под номером " << i + 1 << endl;
+        cin >> planes[i].m;
+        cout << "Введите значение тяги для самолета под номером " << i + 1 << endl;
+        cin >> planes[i].t;
+        cout << "Введите значение коэффициента подъемной силы для самолета под номером " << i + 1 << endl;
+        cin >> planes[i].k1;
+        cout << "Введите значение коэффициента сопротивления для самолета под номером " << i + 1 << endl;
+        cin >> planes[i].k2;
+        cout << "Введите значение подъемной силы для самолета под номером " << i + 1 << endl;
+        cin >> planes[i].l;
+        a[i] = (planes[i].l - planes[i].m * g) / planes[i].m;
+        if (a[i] < 0){
+            cout << "Вертикальное ускорение для самолета под номером " << i + 1 << " меньше 0, невозможно вычислить время набора заданной высоты!" << endl;
+            t[i] = 0;
+        }
+        else {
+            t[i] = sqrt(2 * h / a[i]);
+            cout << "Вертикальное ускорение для самолета под номером " << i + 1 << " равняется: " << a[i] << ", а время, необходимое для набора заданной высоты равняется: " << t[i] << endl;
+        }
+    }
+
+    double temp = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (t[j] > t[j + 1]) {
+                temp = t[j];
+                t[j] = t[j + 1];
+                t[j + 1] = temp;
+            }
+        }
+    }
+
+    for (int i = 0; i < n; i++) {
+        cout << t[i] << ", ";
+    }
+    
+    delete[] planes;
+    return 0;
+}

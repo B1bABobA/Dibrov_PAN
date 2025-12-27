@@ -1,0 +1,27 @@
+﻿#include <iostream>
+using namespace std;
+
+int main()
+{
+    double t = 0, l = 0, d = 0, m = 0;
+    const double g = 9.81;
+    cout << "Введите значение тяги T:" << endl;
+    cin >> t;
+    cout << "Введите значение подъемной силы L:" << endl;
+    cin >> l;
+    cout << "Введите значение сопротивления D:" << endl;
+    cin >> d;
+    cout << "Введите значение массы M:" << endl;
+    cin >> m;
+    double a1 = (t - d) / m;
+    double a2 = (l - m * g) / m;
+    cout << "Ускорение по направлению равняется: " << a1 << endl;
+    cout << "Вертикальное ускорение равняется: " << a2 << endl;
+    if (a2 > 0.5)
+        cout << "Текущий режим полёта - набор высоты" << endl;
+    else if (a2 >= 0 && a2 <= 0.5)
+        cout << "Текущий режим полёта - горизонтальный полёт" << endl;
+    else
+        cout << "Текущий режим полёта - снижение" << endl;
+    return 0;
+}

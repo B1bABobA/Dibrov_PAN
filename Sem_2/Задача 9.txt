@@ -1,0 +1,53 @@
+
+﻿#include <iostream>
+using namespace std;
+
+struct Aircraft {
+    double m, s, t, k1, k2;
+};
+
+int main()
+{
+    int n=0;
+    const double g = 9.81;
+    double v = 0, p = 0;
+    cout << "Введите количество самолетов N:" << endl;
+    cin >> n;
+    cout << "Введите скорость, с которой будут лететь самолеты V:" << endl;
+    cin >> v;
+    cout << "Введите плотность воздуха p:" << endl;
+    cin >> p;
+    Aircraft* planes = new Aircraft[n];
+    double* a = new double[n];
+    cout << "Необходимо ввести информацию для каждого самолета:" << endl;
+    for (int i = 0; i < n; i++) {
+        double l1 = 0, l2 = 0;
+        cout << "Введите значение массы для самолета под номером " << i + 1 << endl;
+        cin >> planes[i].m;
+        cout << "Введите значение площади крыла для самолета под номером " << i + 1 << endl;
+        cin >> planes[i].s;
+        cout << "Введите значение тяги для самолета под номером " << i + 1 << endl;
+        cin >> planes[i].t;
+        cout << "Введите значение коэффициента подъемной силы для самолета под номером " << i + 1 << endl;
+        cin >> planes[i].k1;
+        cout << "Введите значение коэффициента сопротивления для самолета под номером " << i + 1 << endl;
+        cin >> planes[i].k2;
+        l1 = 0.5 * p * pow(v, 2) * planes[i].s * planes[i].k1;
+        l2 = 0.5 * p * pow(v, 2) * planes[i].s * planes[i].k2;
+        cout << "Подъемная сила для самолета под номером " << i + 1 << " равняется:" << l1 << endl;
+        cout << "Аэродинамическое сопротивление для самолета под номером " << i + 1 << " равняется:" << l2 << endl;
+        a[i] = (l1 - planes[i].m * g) / planes[i].m;
+    }
+    double temp1 = a[0];
+    int temp2 = 0;
+    for (int i = 0; i < n; i++) {
+        if (a[i] > temp1) {
+            temp1 = a[i];
+            temp2 = i;
+        }
+    }
+    cout << "Наибольшее ускорение имеет самолет под номером " << temp2+1 << " и оно равняется " << temp1 << endl;
+    delete[] planes;
+    delete[] a;
+    return 0;
+}
