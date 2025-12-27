@@ -1,0 +1,137 @@
+﻿#include <iostream>
+
+
+class Aerodynamics {
+
+    Aerodynamics(double a, double b, double c) {};
+    double computeDrag(double a) { return 1; };
+};
+
+class Engine {
+private:
+    double thrust;     // Тяга (H)
+    double fuelFlow;   // Расход топлива (кг/с)
+    double fuel;       // Оставшееся топливо (кг)
+
+public:
+    Engine(double t, double ff, double f)
+        : thrust(t), fuelFlow(ff), fuel(f) {}
+
+    double getThrust() {
+        if (fuel > 0) return thrust;
+        return 0.0;
+    }
+
+    bool hasFuel() {
+        return fuel > 0;
+    }
+
+    void burn(double dt) {
+        if (fuel > 0) {
+            double burned = fuelFlow * dt;
+            fuel -= burned;
+            if (fuel < 0) fuel = 0;
+        }
+    }
+
+    double getFuel() const { return fuel; }
+};
+class Engine {
+private:
+    double thrust;     // Тяга (H)
+    double fuelFlow;   // Расход топлива (кг/с)
+    double fuel;       // Оставшееся топливо (кг)
+
+public:
+    Engine(double t, double ff, double f)
+        : thrust(t), fuelFlow(ff), fuel(f) {}
+
+    double getThrust() {
+        if (fuel > 0) return thrust;
+        return 0.0;
+    }
+
+    bool hasFuel() {
+        return fuel > 0;
+    }
+
+    void burn(double dt) {
+        if (fuel > 0) {
+            double burned = fuelFlow * dt;
+            fuel -= burned;
+            if (fuel < 0) fuel = 0;
+        }
+    }
+
+    double getFuel() const { return fuel; }
+};
+class FlightSystem {
+private:
+    Engine engine;
+    Aerodynamics aero;
+    double altitude;    // Высота (м)
+    double velocity;    // Скорость (м/с)
+    double mass;        // Масса самолета (кг)
+    double time;        // Время полета (с)
+    const double g = 9.81; // Ускорение свободного падения (м/с²)
+
+public:
+    FlightSystem(const Engine& e, const Aerodynamics& a, double m)
+        : engine(e), aero(a), altitude(0), velocity(0), mass(m), time(0) {}
+
+    void simulate(double dt, double totalTime) {
+        std::cout << "\n=== Начало симуляции полета ===\n";
+        std::cout << "Шаг времени: " << dt << " с\n";
+        std::cout << "Общее время: " << totalTime << " с\n\n";
+
+        while (time < totalTime && engine.hasFuel()) {
+            // Расчет ускорения: a = (T - D)/m - g
+            double thrust = engine.getThrust();
+            double drag = aero.computeDrag(velocity);
+            double acceleration = (thrust - drag) / mass - g;
+
+            // Обновление параметров
+            velocity += acceleration * dt;
+            altitude += velocity * dt;
+            engine.burn(dt);
+            time += dt;
+
+            // Вывод текущих параметров
+            std::cout << "Время: " << time << " с | ";
+            std::cout << "Высота: " << altitude << " м | ";
+            std::cout << "Скорость: " << velocity << " м/с | ";
+            std::cout << "Тяга: " << thrust << " Н | ";
+            std::cout << "Сопротивление: " << drag << " Н | ";
+            std::cout << "Топливо: " << engine.getFuel() << " кг\n";
+
+            // Проверка на падение
+            if (altitude < 0) {
+                std::cout << "\nСамолет упал!\n";
+                break;
+            }
+        }
+
+        printSummary();
+    }
+
+    void printSummary() {
+        std::cout << "\n=== Итоги полета ===\n";
+        std::cout << "Общее время полета: " << time << " с\n";
+        std::cout << "Конечная высота: " << altitude << " м\n";
+        std::cout << "Конечная скорость: " << velocity << " м/с\n";
+        std::cout << "Остаток топлива: " << engine.getFuel() << " кг\n";
+    }
+};
+int main() {
+    // Создание компонентов самолета
+    Engine engine(50000, 2.5, 1000);  // Тяга 50000 Н, расход 2.5 кг/с, топливо 1000 кг
+    //Aerodynamics aero(0.03, 1.225, 50); // Cd=0.03, плотность 1.225 кг/м³, площадь крыла 50 м²
+
+    // Создание системы полета
+    //FlightSystem aircraft(engine, aero, 20000); // Масса самолета 20000 кг
+
+    // Запуск симуляции
+    //aircraft.simulate(0.5, 100); // Шаг 0.5 с, общее время 100 с
+
+    return 0;
+}
